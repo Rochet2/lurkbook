@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Album', '')" />
+    <body>
+        <header th:replace="fragments :: header" />    
+        <div class="container">
+            <div class="card-columns mt-2">
+                <div th:if="${#lists.size(images) < 10}" class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add new image</h5>
+                        <p class="card-text">You can add total of 10 images</p>
+                        <form method="POST" action="/images" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Image</label>
+                                <input type="file" accept="image/*" name="file" id="file" class="form-control-file mb-2 btn-primary"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" name="description" id="description"></textarea>
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Send image"/>
+                        </form>
+                    </div>
+                </div>
+                <div class="card" th:each="image : ${images}">
+                    <a th:href="@{/images/{id}(id=${image.id})}">
+                    <img class="card-img-top" th:src="@{/images/{id}/content(id=${image.id})}" alt="Card image" />
+                    </a>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${image.description}"></p>
+                    </div>
+                    <div class="card-footer">
+                        <form class="form-inline mr-2" style="display: inline;" th:action="@{/images/{id}(id=${image.id})}" th:method="delete">
+                            <input class="btn btn-secondary" type="submit" value="Delete"/>
+                        </form>
+                        <form class="form-inline" style="display: inline;" th:action="@{/images/{id}/avatar(id=${image.id})}" th:method="post">
+                            <input class="btn btn-secondary" type="submit" value="Set as avatar"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

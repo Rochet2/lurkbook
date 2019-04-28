@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Image', '')" />
+    <body>
+        <header th:replace="fragments :: header" />  
+        <div class="container">
+            <div class="col-sm-6 col-xs-1 mx-auto">
+                <div class="card">
+                    <img class="card-img-top" th:src="@{/images/{id}/content(id=${image.id})}" alt="Avatar" />
+                    <div class="card-body">
+                        <p class="card-text" th:text="${image.description}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

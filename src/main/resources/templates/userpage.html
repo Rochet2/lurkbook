@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Main page', '')" />
+    <body>
+        <header th:replace="fragments :: header" />
+        <div class="container-fluid">
+            <div class="col-2">
+                <div th:if="${account.avatar}" class="card">
+                    <h2 class="card-header" th:text="${account.nickname}"></h2>
+                    <img class="card-img-top" th:src="@{/images/{id}/content(id=${account.avatar.id})}" alt="Avatar" />
+                </div>
+            </div>
+            <div class="col-10">
+                <a th:href="@{/friend/{profileurl}/request(profileurl=${account.profileurl})}" th:unless="${isme || isfriend || iswaitingaccept || isfriendrequested}">Send friend request</a>
+                <a th:href="@{/friend/{profileurl}/accept(profileurl=${account.profileurl})}" th:if="${iswaitingaccept}">Accept friend request</a>
+                <a th:href="@{/friend/{profileurl}/reject(profileurl=${account.profileurl})}" th:if="${iswaitingaccept}">Reject friend request</a>
+                <p th:if="${isfriend}">Is a friend</p>
+                <p th:if="${isfriendrequested}">Friend request pending</p>
+            </div>
+        </div>
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

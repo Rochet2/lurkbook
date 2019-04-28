@@ -1,0 +1,11 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Main page', '')" />
+    <body>
+        <header th:replace="fragments :: header" />
+        <h1 th:text="${'Hello ' + message}">Hello world</h1>
+
+
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

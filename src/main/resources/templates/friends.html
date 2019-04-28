@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Friends', '')" />
+    <body>
+        <header th:replace="fragments :: header" />
+        <div class="container-fluid">
+            <div class="row h-100">
+                <div class="col-6 border-right h-100">
+                    <h1>Friends</h1>
+                    <ul>
+                        <li th:each="friend : ${friends}"><a th:href="@{/user/{profileurl}(profileurl=${friend.profileurl})}" th:text="${friend.nickname}"></a></li>
+                    </ul>
+                </div>
+                <div class="col-6 border-left">
+                    <h1>Friends waiting accept</h1>
+                    <ul>
+                        <li th:each="friend : ${friendswaitingaccept}"><a th:href="@{/user/{profileurl}(profileurl=${friend.source.profileurl})}" th:text="${friend.source.nickname + ' waiting since ' + #temporals.format(friend.creationtime, 'dd-MM-yyyy')}"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

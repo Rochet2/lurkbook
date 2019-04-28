@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Friends search', '')" />
+    <body>
+        <header th:replace="fragments :: header" />
+        <div class="container">
+            <form class="form-inline" method="GET" th:action="@{/friend/search}">
+                <label for="username" class="sr-only">Nickname part</label>
+                <input type="text" id="nicknamepart" name="nicknamepart" class="form-control" placeholder="Nickname part" autofocus="" autocomplete="off" th:value="${query}" />
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+            </form>
+            <ul>
+                <li th:each="account : ${results}"><a th:href="@{/user/{profileurl}(profileurl=${account.profileurl})}" th:text="${account.nickname}"></a></li>
+            </ul>
+        </div>
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>
