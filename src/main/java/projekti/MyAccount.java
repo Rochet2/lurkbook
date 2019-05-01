@@ -32,20 +32,27 @@ public class MyAccount implements Serializable {
     private boolean fetched = false;
 
     public Account get() {
-        System.out.println("AAA");
         if (fetched) {
             return me;
         }
-        System.out.println("AAAB");
         fetched = true;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("AAAC");
         if (!auth.isAuthenticated()) {
             me = null;
         } else {
             me = accountRepository.findByUsername(auth.getName());
         }
-        System.out.println("AAAD");
         return me;
+    }
+
+    public Account getNoCache() {
+        if (fetched) {
+            return me;
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.isAuthenticated()) {
+            return null;
+        }
+        return accountRepository.findByUsername(auth.getName());
     }
 }

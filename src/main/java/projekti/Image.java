@@ -13,7 +13,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +40,10 @@ public class Image extends AbstractPersistable<Long> {
     @Column(columnDefinition="TEXT")
     public String description;
     
+    @ManyToOne
+    @NotNull
+    private Account owner;
+    
     @OneToMany
     private List<Account> likes = new ArrayList<>();
     
@@ -44,5 +51,6 @@ public class Image extends AbstractPersistable<Long> {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
+    @OrderBy(value = "creationtime DESC")
     private List<ImageComment> comments = new ArrayList<>();
 }

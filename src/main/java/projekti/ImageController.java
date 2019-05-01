@@ -31,60 +31,61 @@ public class ImageController {
     @Autowired
     MyAccount myAccount;
 
-    @GetMapping("/images")
-    public String images(Model model) {
-        model.addAttribute("images", myAccount.get().getImages());
-        return "images";
-    }
-
-    @GetMapping("/images/{id}")
-    public String images(Model model, @PathVariable Long id) {
-        Image image = imageRepository.getOne(id);
-        model.addAttribute("image", image);
-        return "image";
-    }
-
     @GetMapping(path = "/images/{id}/content")
     public ResponseEntity<byte[]> content(@PathVariable Long id) {
-        Image image = imageRepository.getOne(id);
+        Optional<Image> image = imageRepository.findById(id);
+        if (!image.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         final HttpHeaders headers = new HttpHeaders();
-        headers.setContentLength(image.getContentLength());
-        headers.setContentType(MediaType.parseMediaType(image.getContentType()));
-        headers.add("Content-Disposition", "attachment; filename=" + image.getName());
-        return new ResponseEntity<>(image.getContent(), headers, HttpStatus.CREATED);
+        headers.setContentLength(image.get().getContentLength());
+        headers.setContentType(MediaType.parseMediaType(image.get().getContentType()));
+        headers.add("Content-Disposition", "attachment; filename=" + image.get().getName());
+        return new ResponseEntity<>(image.get().getContent(), headers, HttpStatus.CREATED);
     }
 
     @PostMapping("/images")
     @Transactional
-    public String addfile(@RequestParam MultipartFile file, @RequestParam String description) throws IOException {
-        if (myAccount.get().getImages().size() < 10
-                && file.getBytes().length > 0
-                && file.getContentType().startsWith("image/")) {
-            Image f = new Image();
-            f.setContent(file.getBytes());
-            f.setContentLength(file.getSize());
-            f.setContentType(file.getContentType());
-            f.setName(file.getOriginalFilename());
-            f.setDescription(description);
-            myAccount.get().getImages().add(f);
+    public String addfile(@RequestParam MultipartFile file, @RequestParam String description) {
+        Account me = myAccount.get();
+        try {
+            if (me.getImages().size() < 10
+                    && file.getBytes().length > 0
+                    && file.getContentType().startsWith("image/")) {
+                Image f = new Image();
+                f.setContent(file.getBytes());
+                f.setContentLength(file.getSize());
+                f.setContentType(file.getContentType());
+                f.setName(file.getOriginalFilename());
+                f.setDescription(description);
+                f.setOwner(me);
+                me.getImages().add(f);
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        return "redirect:/images";
+        return "redirect:/users/"+me.getProfileurl()+"/images";
     }
 
     @DeleteMapping("/images/{id}")
     @Transactional
     public String deletefile(@PathVariable Long id) {
-        myAccount.get().getImages().removeIf(o -> o.getId().equals(id));
-        return "redirect:/images";
+        Account me = myAccount.get();
+        me.getImages().removeIf(o -> o.getId().equals(id));
+        Image avatar = me.getAvatar();
+        if (avatar != null && avatar.getId().equals(id))
+            me.setAvatar(null);
+        return "redirect:/users/"+me.getProfileurl()+"/images";
     }
 
     @PostMapping("/images/{id}/avatar")
     @Transactional
     public String avatar(@PathVariable Long id) {
-        Optional<Image> maybeavatar = myAccount.get().getImages().stream().filter(o -> o.getId().equals(id)).findFirst();
+        Account me = myAccount.get();
+        Optional<Image> maybeavatar = me.getImages().stream().filter(o -> o.getId().equals(id)).findFirst();
         if (maybeavatar.isPresent()) {
-            myAccount.get().setAvatar(maybeavatar.get());
+            me.setAvatar(maybeavatar.get());
         }
-        return "redirect:/images";
+        return "redirect:/users/"+me.getProfileurl()+"/images";
     }
 }

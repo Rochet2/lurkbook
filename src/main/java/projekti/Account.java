@@ -7,12 +7,14 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +27,6 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @NamedEntityGraphs({
 @NamedEntityGraph(name = "Account.images", attributeNodes = {@NamedAttributeNode("images")}),
 @NamedEntityGraph(name = "Account.messages", attributeNodes = {@NamedAttributeNode("messages")}),
-@NamedEntityGraph(name = "Account.friends", attributeNodes = {@NamedAttributeNode("friends"), @NamedAttributeNode("friendsWaitingAccept")})
 })
 public class Account extends AbstractPersistable<Long> {
 
@@ -38,7 +39,7 @@ public class Account extends AbstractPersistable<Long> {
     @Column(unique = true, nullable = false)
     private String profileurl;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Image avatar;
 
     @ManyToMany
@@ -52,14 +53,17 @@ public class Account extends AbstractPersistable<Long> {
 
     @OneToMany(
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        mappedBy = "owner"
     )
     private List<Image> images = new ArrayList<>();
     
     @OneToMany(
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        mappedBy = "target"
     )
+    @OrderBy(value = "creationtime DESC")
     private List<PageMessage> messages = new ArrayList<>();
 
     Account(String username, String password, String nickname, String profileurl) {
@@ -67,5 +71,6 @@ public class Account extends AbstractPersistable<Long> {
         this.password = password;
         this.nickname = nickname;
         this.profileurl = profileurl;
+        
     }
 }

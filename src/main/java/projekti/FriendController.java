@@ -1,6 +1,7 @@
 package projekti;
 
 import java.util.List;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,9 +22,9 @@ public class FriendController {
     MyAccount myAccount;
 
     @GetMapping("/friends")
+    @RequireMe
     public String getfriends(Model model) {
         Account me = myAccount.get();
-
         model.addAttribute("friends", me.getFriends());
         model.addAttribute("friendswaitingaccept", me.getFriendsWaitingAccept());
         return "friends";
@@ -45,7 +46,7 @@ public class FriendController {
         if (!me.getFriends().contains(target) && !me.getFriendsWaitingAccept().stream().anyMatch(o -> o.getSource().equals(target))) {
             target.getFriendsWaitingAccept().add(new FriendRequest(me));
         }
-        return "redirect:/user/" + target.getProfileurl();
+        return "redirect:/users/" + target.getProfileurl();
     }
 
     @GetMapping("/friend/{profileurl}/accept")
@@ -55,8 +56,9 @@ public class FriendController {
         Account target = accountRepository.findByProfileurl(profileurl);
         if (me.getFriendsWaitingAccept().removeIf(o -> o.getSource().equals(target))) {
             me.getFriends().add(target);
+            target.getFriends().add(me);
         }
-        return "redirect:/user/" + target.getProfileurl();
+        return "redirect:/users/" + target.getProfileurl();
     }
 
     @GetMapping("/friend/{profileurl}/reject")
@@ -65,7 +67,7 @@ public class FriendController {
         Account me = myAccount.get();
         Account target = accountRepository.findByProfileurl(profileurl);
         me.getFriendsWaitingAccept().removeIf(o -> o.getSource().equals(target));
-        return "redirect:/user/" + target.getProfileurl();
+        return "redirect:/users/" + target.getProfileurl();
     }
 
 }

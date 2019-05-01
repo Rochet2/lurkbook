@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,15 +36,21 @@ public class PageMessage extends AbstractPersistable<Long> {
     @NotNull
     @ManyToOne
     private Account sender;
-    
+
+    @NotNull
+    @ManyToOne
+    private Account target;
+
     @OneToMany(
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
+    @OrderBy(value = "creationtime DESC")
     private List<PageMessageComment> comments = new ArrayList<>();
 
-    PageMessage(Account sender, String message) {
+    PageMessage(Account sender, Account target, String message) {
         this.sender = sender;
+        this.target = target;
         this.message = message;
     }
 }
