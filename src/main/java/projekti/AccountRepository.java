@@ -10,6 +10,5 @@ import org.springframework.data.repository.query.Param;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByUsername(String username);
     List<Account> findByNicknameContainingIgnoreCase(String username, Pageable pageable);
-    @EntityGraph(attributePaths = {"messages"})
     Account findByProfileurl(String profileurl);
 }
