@@ -8,10 +8,24 @@
                 <div class="col-12 mx-auto">
                     <div class="card">
                         <img class="card-img-top" th:src="@{/images/{id}/content(id=${image.id})}" alt="Avatar" />
-                        <div class="card-body" th:if="${#strings.length(image.description)>0}">
-                            <p class="card-text" th:text="${image.description}"></p>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-10">
+                                    <p class="card-text" th:text="${image.description}"></p>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <span th:text="${#lists.size(image.likes)}"></span> likes
+                                    <form th:if="${isfriend && not #lists.contains(image.likes, me.id)}" th:method="POST" th:action="@{/users/{profileurl}/images/{imageid}/like(profileurl=${account.profileurl}, imageid=${image.id})}">
+                                        <input type="submit" class="btn btn-primary" value="Like"/>
+                                    </form>
+                                    <form th:if="${isfriend && #lists.contains(image.likes, me.id)}" th:method="POST" th:action="@{/users/{profileurl}/images/{imageid}/unlike(profileurl=${account.profileurl}, imageid=${image.id})}">
+                                        <input type="submit" class="btn btn-primary" value="Unlike"/>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body" th:if="${not #lists.isEmpty(image.comments)}">
+                            <h6>Comments:</h6>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item" th:each="comment,iterStatC : ${image.comments}" th:if="${iterStatC.index}<10">
                                     <a th:href="@{/users/{profileurl}(profileurl=${me.profileurl})}" th:text="${comment.sender.nickname}+':'"></a>

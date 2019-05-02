@@ -46,6 +46,7 @@ public class ImageController {
 
     @PostMapping("/images")
     @Transactional
+    @RequireMe
     public String addfile(@RequestParam MultipartFile file, @RequestParam String description) {
         Account me = myAccount.get();
         try {
@@ -69,6 +70,7 @@ public class ImageController {
 
     @DeleteMapping("/images/{id}")
     @Transactional
+    @RequireMe
     public String deletefile(@PathVariable Long id) {
         Account me = myAccount.get();
         me.getImages().removeIf(o -> o.getId().equals(id));
@@ -80,6 +82,7 @@ public class ImageController {
 
     @PostMapping("/images/{id}/avatar")
     @Transactional
+    @RequireMe
     public String avatar(@PathVariable Long id) {
         Account me = myAccount.get();
         Optional<Image> maybeavatar = me.getImages().stream().filter(o -> o.getId().equals(id)).findFirst();

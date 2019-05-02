@@ -40,6 +40,7 @@ public class FriendController {
 
     @GetMapping("/friend/{profileurl}/request")
     @Transactional
+    @RequireMe
     public String friendrequest(Model model, @PathVariable String profileurl) {
         Account me = myAccount.get();
         Account target = accountRepository.findByProfileurl(profileurl);
@@ -51,6 +52,7 @@ public class FriendController {
 
     @GetMapping("/friend/{profileurl}/accept")
     @Transactional
+    @RequireMe
     public String friendaccept(Model model, @PathVariable String profileurl) {
         Account me = myAccount.get();
         Account target = accountRepository.findByProfileurl(profileurl);
@@ -63,6 +65,7 @@ public class FriendController {
 
     @GetMapping("/friend/{profileurl}/reject")
     @Transactional
+    @RequireMe
     public String friendreject(Model model, @PathVariable String profileurl) {
         Account me = myAccount.get();
         Account target = accountRepository.findByProfileurl(profileurl);

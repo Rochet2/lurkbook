@@ -30,9 +30,14 @@ public class ImageComment extends AbstractPersistable<Long> {
     @NotNull
     @ManyToOne
     private Account sender;
+    
+    @ManyToOne
+    @NotNull
+    private Image owner;
 
-    ImageComment(Account sender, String message) {
+    ImageComment(Image owner, Account sender, String message) {
         this.sender = sender;
+        this.owner = owner;
         this.message = message;
     }
 }

@@ -30,9 +30,14 @@ public class PageMessageComment extends AbstractPersistable<Long> {
     @NotNull
     @ManyToOne
     private Account sender;
+    
+    @ManyToOne
+    @NotNull
+    private PageMessage owner;
 
-    PageMessageComment(Account sender, String message) {
+    PageMessageComment(PageMessage owner, Account sender, String message) {
         this.sender = sender;
+        this.owner = owner;
         this.message = message;
     }
 }

@@ -6,13 +6,17 @@
 package projekti;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -44,12 +48,13 @@ public class Image extends AbstractPersistable<Long> {
     @NotNull
     private Account owner;
     
-    @OneToMany
-    private List<Account> likes = new ArrayList<>();
+    @ElementCollection
+    private Set<Long> likes = new HashSet<>();
     
     @OneToMany(
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        mappedBy = "owner"
     )
     @OrderBy(value = "creationtime DESC")
     private List<ImageComment> comments = new ArrayList<>();

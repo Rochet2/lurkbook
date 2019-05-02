@@ -3,6 +3,7 @@ package projekti;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -71,6 +72,31 @@ public class Account extends AbstractPersistable<Long> {
         this.password = password;
         this.nickname = nickname;
         this.profileurl = profileurl;
-        
+    }
+    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.getId());
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Account other = (Account) obj;
+        if (!Objects.equals(this.getId(), other.getId())) {
+            return false;
+        }
+        return true;
     }
 }

@@ -7,11 +7,16 @@ package projekti;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
@@ -28,6 +33,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraphs({
+@NamedEntityGraph(name = "PageMessage.comments", attributeNodes = {@NamedAttributeNode("comments")}),
+})
 public class PageMessage extends AbstractPersistable<Long> {
 
     private LocalDateTime creationtime = LocalDateTime.now();
@@ -43,10 +51,14 @@ public class PageMessage extends AbstractPersistable<Long> {
 
     @OneToMany(
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        mappedBy = "owner"
     )
     @OrderBy(value = "creationtime DESC")
     private List<PageMessageComment> comments = new ArrayList<>();
+    
+    @ElementCollection
+    private Set<Long> likes = new HashSet<>();
 
     PageMessage(Account sender, Account target, String message) {
         this.sender = sender;
