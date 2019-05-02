@@ -36,7 +36,6 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 public class Image extends AbstractPersistable<Long> {
     public long contentLength;
-    @Lob
     @Basic(fetch = FetchType.LAZY)
     public byte[] content;
     public String contentType;
