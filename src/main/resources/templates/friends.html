@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Friends', '')" />
+    <body>
+        <header th:replace="fragments :: header" />
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1>Friends:</h1>
+                            <ul class="mt-4 list-group list-group-flush">
+                                <li th:if="${#lists.isEmpty(friends)}" class="list-group-item">
+                                    You have no friends
+                                </li>
+                                <li class="list-group-item" th:each="friend : ${friends}">
+                                    <a th:href="@{/users/{profileurl}(profileurl=${friend.profileurl})}" th:text="${friend.nickname}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1>Friends waiting accept:</h1>
+                            <ul class="mt-4 list-group list-group-flush">
+                                <li th:if="${#lists.isEmpty(friendswaitingaccept)}" class="list-group-item">
+                                    No waiting friend requests
+                                </li>
+                                <li class="list-group-item" th:each="friend : ${friendswaitingaccept}">
+                                    <a th:href="@{/users/{profileurl}(profileurl=${friend.source.profileurl})}" th:text="${friend.source.nickname}"></a>
+                                    <span th:text="${#temporals.format(friend.creationtime, 'dd-MM-yyyy')}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>

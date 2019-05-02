@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: head('Image', '')" />
+    <body>
+        <header th:replace="fragments :: header" />  
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    <div class="card">
+                        <img class="card-img-top" th:src="@{/images/{id}/content(id=${image.id})}" alt="Avatar" />
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-10">
+                                    <p class="card-text" th:text="${image.description}"></p>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <span th:text="${#lists.size(image.likes)}"></span> likes
+                                    <form th:if="${isfriend && not #lists.contains(image.likes, me.id)}" th:method="POST" th:action="@{/users/{profileurl}/images/{imageid}/like(profileurl=${account.profileurl}, imageid=${image.id})}">
+                                        <input type="submit" class="btn btn-primary" value="Like"/>
+                                    </form>
+                                    <form th:if="${isfriend && #lists.contains(image.likes, me.id)}" th:method="POST" th:action="@{/users/{profileurl}/images/{imageid}/unlike(profileurl=${account.profileurl}, imageid=${image.id})}">
+                                        <input type="submit" class="btn btn-primary" value="Unlike"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" th:if="${not #lists.isEmpty(image.comments)}">
+                            <h6>Comments:</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" th:each="comment,iterStatC : ${image.comments}" th:if="${iterStatC.index}<10">
+                                    <a th:href="@{/users/{profileurl}(profileurl=${me.profileurl})}" th:text="${comment.sender.nickname}+':'"></a>
+                                    <span th:text="${comment.message}"></span>
+                                    <span class="text-muted float-right" th:text="${#temporals.format(comment.creationtime, 'HH:mm dd-MM-yyyy')}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer" th:if="${isme || isfriend}">
+                            <form method="POST" th:action="@{/users/{profileurl}/images/{imageid}/comment(profileurl=${account.profileurl}, imageid=${image.id})}">
+                                <div class="form-group">
+                                    <textarea class="form-control" name="comment" id="comment"></textarea>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Send comment"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer" />
+    </body>
+</html>
