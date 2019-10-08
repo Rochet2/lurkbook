@@ -36,20 +36,21 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 public class Image extends AbstractPersistable<Long> {
     public long contentLength;
+    @Lob
     @Basic(fetch = FetchType.LAZY)
     public byte[] content;
     public String contentType;
     public String name;
     @Column(columnDefinition="TEXT")
     public String description;
-    
+
     @ManyToOne
     @NotNull
     private Account owner;
-    
+
     @ElementCollection
     private Set<Long> likes = new HashSet<>();
-    
+
     @OneToMany(
         cascade = CascadeType.ALL,
         orphanRemoval = true,
