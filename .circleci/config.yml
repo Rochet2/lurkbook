@@ -32,7 +32,7 @@ jobs:
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io >/dev/null 2>&1
 
             set -x
-            image=gcr.io/unity-ads-workshop-test/rimi-nodejs-docker-lurkbook
+            image=gcr.io/unity-ads-workshop-test/rimi-docker-lurkbook
 
             docker build -t ${image}:${CIRCLE_SHA1} .
             docker push ${image}:${CIRCLE_SHA1}
@@ -60,7 +60,7 @@ jobs:
             gcloud container clusters get-credentials ${WORKSHOP_CLUSTER} --zone ${WORKSHOP_CLUSTER_ZONE} --project ${WORKSHOP_GCP_PROJECT}
             kubectl config current-context
 
-            service=rimi-nodejs-docker-lurkbook
+            service=rimi-docker-lurkbook
             namespace=workshop
 
             if kubectl get service ${service}-lb -n ${namespace} > /dev/null; then
