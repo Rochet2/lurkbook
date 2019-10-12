@@ -2,26 +2,26 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   namespace: workshop
-  name: rasmus-nodejs-docker-webapp
+  name: rimi-docker-lurkbook
   labels:
-    app: rasmus-nodejs-docker-webapp
+    app: rimi-docker-lurkbook
 
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   selector:
     matchLabels:
-      app: rasmus-nodejs-docker-webapp
+      app: rimi-docker-lurkbook
 
   template:
     metadata:
       labels:
-        app: rasmus-nodejs-docker-webapp
+        app: rimi-docker-lurkbook
       annotations:
     spec:
       containers:
-        - image: gcr.io/unity-ads-workshop-test/rasmus-nodejs-docker-webapp:master
-          name: rasmus-nodejs-docker-webapp
+        - image: gcr.io/unity-ads-workshop-test/rimi-docker-lurkbook:master
+          name: rimi-docker-lurkbook
           imagePullPolicy: Always
           resources:
             requests:
